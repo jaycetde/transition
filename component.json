@@ -1,0 +1,17 @@
+{
+  "name": "transition",
+  "description": "Animation library to provide simple transitions.",
+  "repo": "JayceTDE/transition",
+  "version": "0.0.1",
+  "scripts": [
+    "index.js"
+  ],
+  "dependencies": {
+    "component/once": "*",
+    "component/inherit": "*",
+    "component/Emitter": "*",
+    "component/each": "*",
+    "yields/capitalize": "*",
+    "JayceTDE/deeperDefaults": "*"
+  }
+}
