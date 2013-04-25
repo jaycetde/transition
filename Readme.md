@@ -1,6 +1,8 @@
 # Transition
 
-	Simple animation library
+Simple animation library
+
+Most of this library is untested. Use at your own risk and feel free to contribute.
 
 ## Installation
 
