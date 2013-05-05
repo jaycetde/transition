@@ -12,6 +12,8 @@
     "component/Emitter": "*",
     "component/each": "*",
     "yields/capitalize": "*",
-    "JayceTDE/deeperDefaults": "*"
+    "JayceTDE/deeperDefaults": "*",
+    "component/raf": "*",
+    "JayceTDE/cubic-bezier": "*"
   }
 }

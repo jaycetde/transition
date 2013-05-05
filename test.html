@@ -4,11 +4,18 @@
 
 <style>
 
-#container {
+.box {
 	position:relative;
 	width:200px;
 	height:100px;
 	background:grey;
+  margin:20px;
+}
+
+#container2 {
+  -webkit-transition-property: left;
+  -webkit-transition-timing-function: ease-in-out;
+  -webkit-transition-duration: 5s;
 }
 
 </style>
@@ -16,7 +23,8 @@
 </head>
 <body>
 
-<div id="container"></div>
+<div id="container" class="box"></div>
+<div id="container2" class="box"></div>
 
 <script src="build/build.js"></script>
 <script>
@@ -26,7 +34,9 @@ var Transition = require('transition')
 	, transition = new Transition(el)
 ;
 
-transition.to({ left: 500 });
+transition.to({ left: 500 }, { transition: 'ease-in-out', duration: 5000 });
+
+document.querySelector('#container2').style.left = '500px';
 
 </script>
 

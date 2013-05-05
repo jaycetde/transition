@@ -6,53 +6,28 @@ var each = require('each')
 	, once = require('once')
 	, capitalize = require('capitalize')
 	, defaults = require('deeperDefaults')
-;
-
-var vendors = 'Ms Moz Webkit O'.split(' ');
-
-var requestFrame = requestAnimationFrame
-	, cancelFrame = cancelAnimationFrame
-	, now
+  , raf = require('raf')
+  , bezier = require('cubic-bezier')
+  , now
 ;
 
 now = function () {
-	return window.mozAnimationStartTime || (window.performance && window.performance.now && window.performance.now()) || Date.now();
-}
-
-if (!requestFrame) {
-	each(vendors, function (vendor) {
-		vendor = vendor.toLowerCase();
-		if (window[ vendor + 'RequestAnimationFrame' ]) {
-			requestFrame = window[ vendor + 'RequestAnimationFrame' ];
-			cancelFrame = window[ vendor + 'CancelAnimationFrame' ] || window[ vendor + 'CancelRequestAnimationFrame' ];
-		}
-	});
-}
-
-if (!requestFrame) {
-	var frameRate = 33
-		, frameDelay = Math.round(1000 / frameRate)
-		, lastFrameTime = 0;
-
-	requestFrame = function (callback) {
-		var currentTime = now()
-			, delay = Math.max(0, frameDelay - (currentTime - lastFrameTime))
-			, id
-		;
-
-		id = setTimeout(function () {
-			callback(currentTime + delay);
-		}, delay);
-		lastFrameTime = currentTime + delay;
-	};
-	cancelFrame = clearTimeout;
-}
+  return window.mozAnimationStartTime || (window.performance && window.performance.now && window.performance.now()) || Date.now();
+};
 
 var defaultValues = {
 	duration: 300,
-	transition: 'linear',
+	transition: 'default',
 	unit: 'px'
 };
+
+// function tick(time) {
+
+
+
+// }
+
+// tick.registered = [];
 
 var tick = function (time) {
 	
@@ -96,7 +71,7 @@ var tick = function (time) {
 		return self.done();
 	}
 
-	requestFrame(this.boundTick);
+	raf(this.boundTick);
 
 };
 
@@ -241,7 +216,7 @@ Transition.prototype.run = function () {
 
 	this.running = true;
 
-	requestFrame(this.boundTick);
+	raf(this.boundTick);
 
 	this.emit('run');
 
@@ -293,14 +268,16 @@ Transition.prototype.stop = function (prop) {
 
 };
 
+var epsilon = 0.004;
+
 Transition.transitions = {
-	linear: function (per) {
+	'linear': function (per) {
 		//return Math.round(start + ((end - start) * per));
 		return per;
 	},
-	ease: function (per) {
-		return 0.5 * Math.sin(Math.PI * per - (Math.PI / 2)) + 0.5;
-	}
+	'ease-in': bezier(0.42, 0, 1, 1, epsilon),
+  'ease-out': bezier(0, 0, 0.58, 1, epsilon),
+  'ease-in-out': bezier(0.42, 0, 0.58, 1, epsilon)
 };
 
 Transition.properties = {};
