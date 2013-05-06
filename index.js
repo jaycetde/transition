@@ -22,7 +22,7 @@ now = function () {
 
 var defaultValues = {
   duration: 300,
-  transition: 'default',
+  transition: 'ease',
   unit: 'px'
 };
 
@@ -314,6 +314,7 @@ Transition.prototype.tick = function (time) {
 var epsilon = 0.0005;
 
 Transition.transitions = {
+    'ease': bezier(0.25, 0.1, 0.25, 1, epsilon),
     'linear': function (per) {
         //return Math.round(start + ((end - start) * per));
         return per;
