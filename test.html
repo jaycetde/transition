@@ -4,18 +4,22 @@
 
 <style>
 
+html, body {
+    margin: 0;
+}
+
 .box {
-	position:relative;
-	width:200px;
-	height:100px;
-	background:grey;
-  margin:20px;
+    position:relative;
+    width:200px;
+    height:100px;
+    background:grey;
+    margin-top:20px;
 }
 
 #container2 {
   -webkit-transition-property: left;
   -webkit-transition-timing-function: ease-in-out;
-  -webkit-transition-duration: 5s;
+  -webkit-transition-duration: 20s;
 }
 
 </style>
@@ -30,13 +34,14 @@
 <script>
 
 var Transition = require('transition')
-	, el = document.querySelector('#container')
-	, transition = new Transition(el)
+    , el1 = document.querySelector('#container')
+    , el2 = document.querySelector('#container2')
+    , transition = new Transition(el1)
 ;
 
-transition.to({ left: 500 }, { transition: 'ease-in-out', duration: 5000 });
+transition.to({ left: 500 }, { transition: 'ease-in-out', duration: 20000 });
 
-document.querySelector('#container2').style.left = '500px';
+el2.style.left = '500px';
 
 </script>
 

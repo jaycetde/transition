@@ -12,6 +12,10 @@ var each = require('each')
   , registered = []
 ;
 
+function cssTransform(el, prop, duration, timing) {
+    stylar()
+}
+
 now = function () {
     return window.mozAnimationStartTime || (window.performance && window.performance.now && window.performance.now()) || Date.now();
 };
@@ -35,6 +39,7 @@ function tick(time) {
 
     while (i < l) {
         registered[i].tick(time);
+        i += 1;
     }
 
     raf(tick);
@@ -260,16 +265,18 @@ Transition.prototype.tick = function (time) {
       , prop
       , animation
       , property
+      , isAnimating = false
     ;
 
-    for (prop in self.props) {
+    for (prop in self.animations) {
         if (self.animations.hasOwnProperty(prop)) {
 
             animation = self.animations[prop];
-            property = Transition.transitions[prop];
+            property = Transition.properties[prop];
 
             if (!property) {
-                return;
+                delete self.animations[prop];
+                continue;
             }
 
             if (time < animation.endTime) {
@@ -279,6 +286,8 @@ Transition.prototype.tick = function (time) {
                 ;
 
                 property.set(self.el, val);
+
+                isAnimating = true;
 
             } else {
 
@@ -290,16 +299,19 @@ Transition.prototype.tick = function (time) {
 
                 delete self.animations[prop];
 
-                tick.unregister(this);
-
             }
 
         }
     }
 
+    if (!isAnimating) {
+        tick.unregister(self);
+        self.done();
+    }
+
 };
 
-var epsilon = 0.004;
+var epsilon = 0.0005;
 
 Transition.transitions = {
     'linear': function (per) {
@@ -348,7 +360,7 @@ each('bottom left marginBottom marginLeft marginRight marginTop paddingBottom pa
 each('height width'.split(' '), function (prop) {
 
     var capProp = capitalize(prop)
-    , unit = 'px'
+      , unit = 'px'
     ;
 
     Transition.properties[prop] = {
