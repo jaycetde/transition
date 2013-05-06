@@ -5,7 +5,6 @@ var each = require('each')
   , Emitter = require('emitter')
   , once = require('once')
   , capitalize = require('capitalize')
-  , defaults = require('deeperDefaults')
   , raf = require('raf')
   , bezier = require('cubic-bezier')
   , now
@@ -20,26 +19,18 @@ now = function () {
     return window.mozAnimationStartTime || (window.performance && window.performance.now && window.performance.now()) || Date.now();
 };
 
-var defaultValues = {
-  duration: 300,
-  transition: 'ease',
-  unit: 'px'
-};
-
 function tick(time) {
 
-    var i = 0
-      , l = registered.length
-    ;
+    var i = registered.length - 1;
 
-    if (l === 0) {
+    if (i === -1) {
         tick._running = false;
         return;
     }
 
-    while (i < l) {
+    while (i >= 0) {
         registered[i].tick(time);
-        i += 1;
+        i -= 1;
     }
 
     raf(tick);
@@ -115,6 +106,10 @@ var Transition = function (el) {
 
 inherit(Transition, Emitter);
 
+Transition.prototype.duration = 300;
+Transition.prototype.timing = 'ease';
+Transition.prototype.unit = 'px';
+
 Transition.prototype.prop = function (prop) {
 
     return new Prop(prop, this);
@@ -124,8 +119,8 @@ Transition.prototype.prop = function (prop) {
 Transition.prototype.to = function (props, options) {
 
     var self = this
-    , animations = self.animations
-    , startTime = now()
+      , animations = self.animations
+      , startTime = now()
     ;
 
     if (!props) {
@@ -134,7 +129,9 @@ Transition.prototype.to = function (props, options) {
 
     options = options || {};
 
-    options = defaults(options, defaultValues);
+    options.duration = options.duration || self.duration;
+    options.timing = options.timing || self.timing;
+    options.unit = options.unit || self.unit;
 
     if (options.callback) {
         options.callback = once(options.callback);
@@ -163,7 +160,7 @@ Transition.prototype.to = function (props, options) {
             startTime: startTime,
             endTime: startTime + options.duration,
             duration: options.duration,
-            transition: options.transition,
+            timing: options.timing,
             callback: options.callback
         };
 
@@ -281,7 +278,7 @@ Transition.prototype.tick = function (time) {
 
             if (time < animation.endTime) {
 
-                var percent = Transition.transitions[animation.transition]((time - animation.startTime) / animation.duration)
+                var percent = Transition.timingFunctions[animation.timing]((time - animation.startTime) / animation.duration)
                   , val = property.calc(percent, animation.startValue, animation.endValue)
                 ;
 
@@ -313,7 +310,7 @@ Transition.prototype.tick = function (time) {
 
 var epsilon = 0.0005;
 
-Transition.transitions = {
+Transition.timingFunctions = {
     'ease': bezier(0.25, 0.1, 0.25, 1, epsilon),
     'linear': function (per) {
         //return Math.round(start + ((end - start) * per));

@@ -19,7 +19,7 @@ html, body {
 #container2 {
   -webkit-transition-property: left;
   -webkit-transition-timing-function: ease-in-out;
-  -webkit-transition-duration: 20s;
+  -webkit-transition-duration: 5s;
 }
 
 </style>
@@ -39,7 +39,7 @@ var Transition = require('transition')
     , transition = new Transition(el1)
 ;
 
-transition.to({ left: 500 }, { transition: 'ease-in-out', duration: 20000 });
+transition.to({ left: 500 }, { timing: 'ease-in-out', duration: 5000 });
 
 el2.style.left = '500px';
 
