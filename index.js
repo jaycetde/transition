@@ -12,7 +12,7 @@ var each = require('each')
 ;
 
 function cssTransform(el, prop, duration, timing) {
-    stylar()
+    //stylar();
 }
 
 now = function () {
